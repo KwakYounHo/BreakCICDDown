@@ -2,4 +2,6 @@ FROM alpine:latest
 
 WORKDIR /app
 
-COPY dist/* ./dist/
+RUN tsc
+
+COPY ./public/* ./dist/* ./dist/
