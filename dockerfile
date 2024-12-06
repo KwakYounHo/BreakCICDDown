@@ -2,10 +2,14 @@ FROM node:22.11.0-alpine
 
 WORKDIR /app
 
-COPY ./package*.json ./
+RUN mkdir -p ./dist
 
-RUN yarn install
+RUN yarn global add typescript
+
+COPY . .
+
+RUN yarn install --production=false
 
 RUN tsc
 
-COPY ./public/* ./dist/* ./dist/
+COPY ./public/* ./dist/
