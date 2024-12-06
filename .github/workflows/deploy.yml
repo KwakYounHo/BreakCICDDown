@@ -1,0 +1,30 @@
+name: Go to S3
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  Copy files to S3:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: File copy
+        run: |
+          docker build -t copy .
+          docker run --name copy-container copy
+          docker cp copy-container:/app/dist ./copies
+
+      - name: AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+
+      - name: Upload to S3
+        run: |
+          aws s3 sync ./copies/ s3://breakcicddown/ --delete
