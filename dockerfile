@@ -10,6 +10,6 @@ COPY . .
 
 RUN yarn install --production=false
 
-RUN tsc
+RUN yarn build
 
 COPY ./public/* ./dist/
